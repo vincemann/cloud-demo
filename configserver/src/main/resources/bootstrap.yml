@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: config-server
+  profiles:
+    active:
+    # wenn ich hier git aktiviere, muss auch die uri aktiviert sein
+#    - git
+    - native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/config
+          # alternative to loading config files from disk
+#        git:
+#          uri: https://github.com/ihuaylupo/config.git
+#          searchPaths: licensingservice
+
+server:
+  port: 8071
+
+# properties werden encrypted in git repo gespeichert
+encrypt:
+  key: fje83Ki8403Iod87dne7Yjsl3THueh48jfuO9j4U2hf64Lo 
+
+
+#Enable all Spring Boot Actuator endpoints.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

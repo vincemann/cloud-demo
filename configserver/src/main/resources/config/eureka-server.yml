@@ -1,0 +1,18 @@
+server:
+  port: 8070
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+  # config server soll sich nicht mit eureka registern
+    registerWithEureka: false
+    # keine registry info local cachen, weil wir eureka client nutzen
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+server:
+# normalerweise wartet eureka 5 minuten um allen services chance zum
+# starten zu geben, zu test zwecken machen wir das auf 5ms
+  waitTimeInMsWhenSyncEmtpy: 5
