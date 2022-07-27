@@ -3,7 +3,8 @@ services:
   database:
     image: postgres:latest
     ports:
-      - "5432:5432"
+    # changed port bc votesnack db is already running on that port
+      - "5532:5432"
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
@@ -37,7 +38,8 @@ services:
       PROFILE: "dev"
       CONFIGSERVER_URI: "http://configserver:8071"
       CONFIGSERVER_PORT:   "8071"
-      DATABASESERVER_PORT: "5432"
+      # changed port bc votesnack db is already running on that port
+      DATABASESERVER_PORT: "5532"
       ENCRYPT_KEY:       "IMSYMMETRIC"
     depends_on:
       database:
