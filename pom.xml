@@ -24,7 +24,7 @@
 
   <modules>
     <module>configserver</module>
-    <module>licensing-service</module>
+    <module>posting-service</module>
     <module>eurekaserver</module>
   </modules>
 
