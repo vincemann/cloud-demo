@@ -1,6 +1,7 @@
-package com.github.vincemann.posting.dto;
+package com.github.vincemann.localposting.dto;
 
-import com.github.vincemann.posting.model.GeoPosition;
+
+import com.github.vincemann.localposting.model.GeoPosition;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

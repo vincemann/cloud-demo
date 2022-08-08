@@ -17,7 +17,6 @@ public abstract class AbstractPostingDto extends AbstractDto<Long> {
     private Boolean contactable;
     private byte[] picture;
 
-    @Builder
     public AbstractPostingDto(String title, String text, Long longitude, Long latitude, Boolean contactable, byte[] picture) {
         this.title = title;
         this.text = text;

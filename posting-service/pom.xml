@@ -8,8 +8,8 @@
 		<version>2.2.3.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.optimagrowth</groupId>
-	<artifactId>licensing-service</artifactId>
+	<groupId>com.github.vincemann</groupId>
+	<artifactId>posting-service</artifactId>
 	<version>0.0.2-SNAPSHOT</version>
 	<name>License Service</name>
 	<description>Ostock Licensing Service</description>
@@ -18,7 +18,7 @@
 		<java.version>11</java.version>
 		<docker.image.prefix>ostock</docker.image.prefix>
 		<spring-cloud.version>Hoxton.SR1</spring-cloud.version>
-		<spring.rapid.version>1.0.0-SNAPSHOT.12</spring.rapid.version>
+		<spring.rapid.version>1.0.0-SNAPSHOT.13</spring.rapid.version>
 	</properties>
 
 	<dependencies>

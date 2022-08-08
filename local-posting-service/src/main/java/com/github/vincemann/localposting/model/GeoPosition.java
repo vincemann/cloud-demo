@@ -1,4 +1,4 @@
-package com.github.vincemann.posting.model;
+package com.github.vincemann.localposting.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

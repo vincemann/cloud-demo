@@ -1,4 +1,4 @@
-package com.github.vincemann.posting.dto;
+package com.github.vincemann.localposting.dto;
 
 import com.github.vincemann.springrapid.core.model.AbstractDto;
 import lombok.Getter;

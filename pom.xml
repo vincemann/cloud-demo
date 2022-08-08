@@ -26,6 +26,8 @@
     <module>configserver</module>
     <module>posting-service</module>
     <module>eurekaserver</module>
+    <module>local-posting-service</module>
+    <module>comment-service</module>
   </modules>
 
 

@@ -30,15 +30,5 @@ public class PostingController extends CrudController<Posting, Long, PostingServ
 				 .build();
 	}
 
-
-	@GetMapping(value = "/api/core/posting/find-nearby")
-	public ResponseEntity<Set<SnippetPostingDto>> findNearbyPostings(@RequestBody RequestPostingsDto requestPostingsDto) throws BadEntityException {
-		Set<Posting> nearbyPostings = getService().findNearbyPostings(requestPostingsDto.getGeoPosition(), requestPostingsDto.getDistance());
-		Set<SnippetPostingDto> dtos = new HashSet<>();
-		for (Posting p : nearbyPostings) {
-			dtos.add(getDtoMapper().mapToDto(p, SnippetPostingDto.class));
-		}
-		return ResponseEntity.ok(dtos);
-	}
 }
 	

@@ -1,6 +1,5 @@
-package com.github.vincemann.posting.util;
+package com.github.vincemann.localposting.util;
 
-import com.github.vincemann.posting.model.Posting;
 
 public class GeoUtil {
 
