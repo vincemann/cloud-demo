@@ -1,0 +1,12 @@
+### GET request posting ms
+GET http://localhost:8071/posting-service/dev
+Accept: application/json
+
+### GET request local posting ms
+GET http://localhost:8071/local-posting-service/dev
+Accept: application/json
+
+
+### GET request local posting ms
+GET http://localhost:8071/comment-service/dev
+Accept: application/json

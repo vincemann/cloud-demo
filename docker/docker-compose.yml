@@ -8,7 +8,7 @@ services:
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
-      POSTGRES_DB:       "ostock_dev"
+      POSTGRES_DB:       "localme_dev"
     volumes:
         - ./init.sql:/docker-entrypoint-initdb.d/1-init.sql
         - ./data.sql:/docker-entrypoint-initdb.d/2-data.sql
@@ -22,22 +22,23 @@ services:
       timeout: 5s
       retries: 5
   configserver:
-    image: ostock/configserver:0.0.1-SNAPSHOT
+    image: localme/configserver:0.0.1-SNAPSHOT
     ports:
        - "8071:8071"
     environment:
-      ENCRYPT_KEY: "fje83Ki8403Iod87dne7Yjsl3THueh48jfuO9j4U2hf64Lo"
+      ENCRYPT_KEY: "${ENCRYPT_KEY}"
     networks:
       backend:
         aliases:
           - "configserver"
-  licensingservice:
-    image: ostock/licensing-service:0.0.2-SNAPSHOT
+  posting-service:
+    image: localme/posting-service:0.0.2-SNAPSHOT
     # die vars kann ich verändern indem ich über cli mit passe
     environment:
       PROFILE: "dev"
       CONFIGSERVER_URI: "http://configserver:8071"
       CONFIGSERVER_PORT:   "8071"
+      GIT_READ_KEY: "${GIT_READ_KEY}"
       # changed port bc votesnack db is already running on that port
       DATABASESERVER_PORT: "5532"
       ENCRYPT_KEY:       "IMSYMMETRIC"
@@ -50,6 +51,26 @@ services:
       - "8080:8080"
     networks:
       - backend
+
+    comment-service:
+        image: localme/comment-service:0.0.1-SNAPSHOT
+        # die vars kann ich verändern indem ich über cli mit passe
+        environment:
+          PROFILE: "dev"
+          CONFIGSERVER_URI: "http://configserver:8071"
+          CONFIGSERVER_PORT:   "8071"
+          # changed port bc votesnack db is already running on that port
+          DATABASESERVER_PORT: "5532"
+          ENCRYPT_KEY:       "IMSYMMETRIC"
+        depends_on:
+          database:
+            condition: service_healthy
+          configserver:
+            condition: service_started
+        ports:
+          - "8080:8080"
+        networks:
+          - backend
 
 networks:
   backend:

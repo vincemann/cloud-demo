@@ -1,8 +1,9 @@
 spring:
     application:
-     name: posting-service
+     name: comment-service
     profiles:
       active: dev
     cloud:
         config: 
             uri: http://configserver:8071
+

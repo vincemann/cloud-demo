@@ -16,7 +16,7 @@
 
 	<properties>
 		<java.version>11</java.version>
-		<docker.image.prefix>ostock</docker.image.prefix>
+		<docker.image.prefix>localme</docker.image.prefix>
 		<spring-cloud.version>Hoxton.SR1</spring-cloud.version>
 		<spring.rapid.version>1.0.0-SNAPSHOT.13</spring.rapid.version>
 	</properties>

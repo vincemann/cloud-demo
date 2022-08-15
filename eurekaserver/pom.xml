@@ -8,7 +8,7 @@
 		<version>2.2.5.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.optimagrowth</groupId>
+	<groupId>com.github.vincemann</groupId>
 	<artifactId>eurekaserver</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Eureka Server</name>
@@ -16,7 +16,7 @@
 
 	<properties>
 		<java.version>11</java.version>
-		<docker.image.prefix>ostock</docker.image.prefix>
+		<docker.image.prefix>localme</docker.image.prefix>
 		<spring-cloud.version>Hoxton.SR1</spring-cloud.version>
 	</properties>
 
