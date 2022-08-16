@@ -1,0 +1,10 @@
+/home/vince/projekte/important/spring-rapid-with-projects/cloud-demo/local-posting-service/src/main/java/com/github/vincemann/localposting/model/GeoPosition.java
+/home/vince/projekte/important/spring-rapid-with-projects/cloud-demo/local-posting-service/src/main/java/com/github/vincemann/localposting/service/jpa/JpaPostingService.java
+/home/vince/projekte/important/spring-rapid-with-projects/cloud-demo/local-posting-service/src/main/java/com/github/vincemann/localposting/util/GeoUtil.java
+/home/vince/projekte/important/spring-rapid-with-projects/cloud-demo/local-posting-service/src/main/java/com/github/vincemann/localposting/service/PostingService.java
+/home/vince/projekte/important/spring-rapid-with-projects/cloud-demo/local-posting-service/src/main/java/com/github/vincemann/localposting/LocalPostingServiceApplication.java
+/home/vince/projekte/important/spring-rapid-with-projects/cloud-demo/local-posting-service/src/main/java/com/github/vincemann/localposting/model/Posting.java
+/home/vince/projekte/important/spring-rapid-with-projects/cloud-demo/local-posting-service/src/main/java/com/github/vincemann/localposting/dto/SnippetPostingDto.java
+/home/vince/projekte/important/spring-rapid-with-projects/cloud-demo/local-posting-service/src/main/java/com/github/vincemann/localposting/dto/RequestPostingsDto.java
+/home/vince/projekte/important/spring-rapid-with-projects/cloud-demo/local-posting-service/src/main/java/com/github/vincemann/localposting/controller/PostingController.java
+/home/vince/projekte/important/spring-rapid-with-projects/cloud-demo/local-posting-service/src/main/java/com/github/vincemann/localposting/repo/PostingRepository.java

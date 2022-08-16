@@ -1,4 +1,5 @@
 version: '2.1'
+
 services:
   database:
     image: postgres:latest
@@ -8,16 +9,17 @@ services:
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
-      POSTGRES_DB:       "localme_dev"
-    volumes:
-        - ./init.sql:/docker-entrypoint-initdb.d/1-init.sql
-        - ./data.sql:/docker-entrypoint-initdb.d/2-data.sql
+      POSTGRES_DB: "localme_dev"
+#    volumes:
+#        - ./init.sql:/docker-entrypoint-initdb.d/1-init.sql
+#        - ./data.sql:/docker-entrypoint-initdb.d/2-data.sql
     networks:
       backend:
         aliases:
           - "database"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -h localhost -d localme_dev"]
+#      test: ["CMD-SHELL", "nmap -p 5532 localhost | grep open"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -25,52 +27,70 @@ services:
     image: localme/configserver:0.0.1-SNAPSHOT
     ports:
        - "8071:8071"
-    environment:
-      ENCRYPT_KEY: "${ENCRYPT_KEY}"
+#    environment:
+#      ENCRYPT_KEY: "${ENCRYPT_KEY}"
+#      ENCRYPT_KEY: PAENFOISDNFO8433NFNDR0567
+#      GIT_READ_KEY: "${GIT_READ_KEY}"
+#      GIT_READ_KEY: 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
     networks:
       backend:
         aliases:
           - "configserver"
+#    healthcheck:
+#          test: ["CMD", "curl --fail --silent localhost:8071/actuator/health | grep UP || exit 1"]
+#          interval: 10s
+#          timeout: 5s
+#          retries: 5
+    depends_on:
+          database:
+            condition: service_healthy
+          database:
+            condition: service_started
+
   posting-service:
     image: localme/posting-service:0.0.2-SNAPSHOT
-    # die vars kann ich verändern indem ich über cli mit passe
-    environment:
-      PROFILE: "dev"
-      CONFIGSERVER_URI: "http://configserver:8071"
-      CONFIGSERVER_PORT:   "8071"
-      GIT_READ_KEY: "${GIT_READ_KEY}"
-      # changed port bc votesnack db is already running on that port
-      DATABASESERVER_PORT: "5532"
-      ENCRYPT_KEY:       "IMSYMMETRIC"
-    depends_on:
-      database:
-        condition: service_healthy
-      configserver:
-        condition: service_started
+#    depends_on:
+#      configserver:
+#        condition: service_healthy
+#      configserver:
+#        condition: service_started
     ports:
       - "8080:8080"
     networks:
       - backend
+    command: "bash -c 'wait-for-it configserver:8071 -- java -jar /app.jar'"
 
-    comment-service:
-        image: localme/comment-service:0.0.1-SNAPSHOT
-        # die vars kann ich verändern indem ich über cli mit passe
-        environment:
-          PROFILE: "dev"
-          CONFIGSERVER_URI: "http://configserver:8071"
-          CONFIGSERVER_PORT:   "8071"
-          # changed port bc votesnack db is already running on that port
-          DATABASESERVER_PORT: "5532"
-          ENCRYPT_KEY:       "IMSYMMETRIC"
-        depends_on:
-          database:
-            condition: service_healthy
-          configserver:
-            condition: service_started
-        ports:
-          - "8080:8080"
-        networks:
+  local-posting-service:
+      image: localme/local-posting-service:0.0.1-SNAPSHOT
+#      depends_on:
+#        configserver:
+#          condition: service_healthy
+#        configserver:
+#          condition: service_started
+      ports:
+        - "8082:8080"
+      networks:
+        - backend
+#      command: "wait-for-it configserver:8071 -- java -jar /app.jar"
+#      command: [ "CMD-SHELL", "wait-for-it", "configserver:8071", "--", "java","-jar","/app.jar" ]
+      command: "bash -c 'wait-for-it configserver:8071 -- java -jar /app.jar'"
+
+
+
+  comment-service:
+      image: localme/comment-service:0.0.1-SNAPSHOT
+#      depends_on:
+#        configserver:
+#          condition: service_healthy
+#        configserver:
+#          condition: service_started
+      ports:
+          - "8081:8080"
+      networks:
           - backend
+#      command: [ "CMD-SHELL", "wait-for-it", "configserver:8071", "--", "java","-jar","/app.jar" ]
+      command: "bash -c 'wait-for-it configserver:8071 -- java -jar /app.jar'"
+
 
 networks:
   backend:

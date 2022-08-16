@@ -16,14 +16,16 @@ spring:
           uri: https://github.com/vincemann/localme-config.git
 #          searchPaths: posting-service, comment-service, local-posting-service
           username: vincemann
-          password: ${GIT_READ_KEY}
+#          password: ${GIT_READ_KEY}
+          password: acb
 
 server:
   port: 8071
 
 # properties werden encrypted in git repo gespeichert
 encrypt:
-  key: ${ENCRYPT_KEY}
+#  key: ${ENCRYPT_KEY}
+  key: abc
 
 
 #Enable all Spring Boot Actuator endpoints.

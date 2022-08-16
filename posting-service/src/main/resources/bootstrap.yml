@@ -2,7 +2,7 @@ spring:
     application:
      name: posting-service
     profiles:
-      active: dev
+      active: dev,web,service
     cloud:
         config: 
             uri: http://configserver:8071

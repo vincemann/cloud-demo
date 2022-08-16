@@ -11,7 +11,7 @@
     <groupId>com.github.vincemann</groupId>
     <artifactId>comment-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>License Service</name>
+    <name>comment ms</name>
     <description>vincemann Comment Service</description>
 
     <properties>
@@ -108,6 +108,15 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <repositories>
+
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+
+    </repositories>
 
     <build>
         <plugins>

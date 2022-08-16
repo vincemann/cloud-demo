@@ -1,0 +1,7 @@
+/home/vince/projekte/important/spring-rapid-with-projects/cloud-demo/comment-service/src/main/java/com/github/vincemann/comment/service/CommentService.java
+/home/vince/projekte/important/spring-rapid-with-projects/cloud-demo/comment-service/src/main/java/com/github/vincemann/comment/service/jpa/JpaCommentService.java
+/home/vince/projekte/important/spring-rapid-with-projects/cloud-demo/comment-service/src/main/java/com/github/vincemann/comment/model/Comment.java
+/home/vince/projekte/important/spring-rapid-with-projects/cloud-demo/comment-service/src/main/java/com/github/vincemann/comment/controller/CommentController.java
+/home/vince/projekte/important/spring-rapid-with-projects/cloud-demo/comment-service/src/main/java/com/github/vincemann/comment/CommentServiceApplication.java
+/home/vince/projekte/important/spring-rapid-with-projects/cloud-demo/comment-service/src/main/java/com/github/vincemann/comment/dto/CommentDto.java
+/home/vince/projekte/important/spring-rapid-with-projects/cloud-demo/comment-service/src/main/java/com/github/vincemann/comment/repo/CommentRepository.java
