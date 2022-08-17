@@ -1,7 +1,7 @@
 # Compiled class file
 *.class
 
-.env
+docker/.env
 # Log file
 *.log
 

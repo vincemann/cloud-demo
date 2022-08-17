@@ -27,20 +27,20 @@ services:
     image: localme/configserver:0.0.1-SNAPSHOT
     ports:
        - "8071:8071"
-#    environment:
+    environment:
 #      ENCRYPT_KEY: "${ENCRYPT_KEY}"
-#      ENCRYPT_KEY: PAENFOISDNFO8433NFNDR0567
+#      ENCRYPT_KEY: abc
 #      GIT_READ_KEY: "${GIT_READ_KEY}"
-#      GIT_READ_KEY: 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
+#      GIT_READ_KEY: abc
     networks:
       backend:
         aliases:
           - "configserver"
-#    healthcheck:
-#          test: ["CMD", "curl --fail --silent localhost:8071/actuator/health | grep UP || exit 1"]
-#          interval: 10s
-#          timeout: 5s
-#          retries: 5
+    healthcheck:
+          test: ["CMD","wait-for-it", "localhost:8071"]
+          interval: 10s
+          timeout: 5s
+          retries: 5
     depends_on:
           database:
             condition: service_healthy
@@ -49,47 +49,49 @@ services:
 
   posting-service:
     image: localme/posting-service:0.0.2-SNAPSHOT
-#    depends_on:
-#      configserver:
-#        condition: service_healthy
-#      configserver:
-#        condition: service_started
+    depends_on:
+      configserver:
+        condition: service_healthy
+      configserver:
+        condition: service_started
+    restart: on-failure
     ports:
       - "8080:8080"
     networks:
       - backend
-    command: "bash -c 'wait-for-it configserver:8071 -- java -jar /app.jar'"
 
   local-posting-service:
       image: localme/local-posting-service:0.0.1-SNAPSHOT
-#      depends_on:
-#        configserver:
-#          condition: service_healthy
-#        configserver:
-#          condition: service_started
+      depends_on:
+        configserver:
+          condition: service_healthy
+        configserver:
+          condition: service_started
+      restart: on-failure
       ports:
         - "8082:8080"
       networks:
         - backend
 #      command: "wait-for-it configserver:8071 -- java -jar /app.jar"
 #      command: [ "CMD-SHELL", "wait-for-it", "configserver:8071", "--", "java","-jar","/app.jar" ]
-      command: "bash -c 'wait-for-it configserver:8071 -- java -jar /app.jar'"
+#      command: "bash -c 'wait-for-it configserver:8071 -- java -jar /app.jar'"
 
 
 
   comment-service:
       image: localme/comment-service:0.0.1-SNAPSHOT
-#      depends_on:
-#        configserver:
-#          condition: service_healthy
-#        configserver:
-#          condition: service_started
+      depends_on:
+        configserver:
+          condition: service_healthy
+        configserver:
+          condition: service_started
+      restart: on-failure
       ports:
           - "8081:8080"
       networks:
           - backend
 #      command: [ "CMD-SHELL", "wait-for-it", "configserver:8071", "--", "java","-jar","/app.jar" ]
-      command: "bash -c 'wait-for-it configserver:8071 -- java -jar /app.jar'"
+#      command: "bash -c 'wait-for-it configserver:8071 -- java -jar /app.jar'"
 
 
 networks:
