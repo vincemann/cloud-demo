@@ -10,6 +10,7 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
       POSTGRES_DB: "localme_dev"
+      POSTGRES_HOST: "database"
 #    volumes:
 #        - ./init.sql:/docker-entrypoint-initdb.d/1-init.sql
 #        - ./data.sql:/docker-entrypoint-initdb.d/2-data.sql
@@ -28,19 +29,21 @@ services:
     ports:
        - "8071:8071"
     environment:
-#      ENCRYPT_KEY: "${ENCRYPT_KEY}"
+    # dont run tests at docker build time, bc at build time cant resolve env vars... -> no test, no query of env var...
+      ENCRYPT_KEY: "${ENCRYPT_KEY}"
 #      ENCRYPT_KEY: abc
-#      GIT_READ_KEY: "${GIT_READ_KEY}"
+      GIT_READ_KEY: "${GIT_READ_KEY}"
 #      GIT_READ_KEY: abc
     networks:
       backend:
         aliases:
           - "configserver"
     healthcheck:
-          test: ["CMD","wait-for-it", "localhost:8071"]
+          test: ["CMD-SHELL","wait-for-it localhost:8071"]
           interval: 10s
           timeout: 5s
           retries: 5
+
     depends_on:
           database:
             condition: service_healthy
