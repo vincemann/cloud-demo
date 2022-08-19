@@ -1,7 +1,10 @@
 # Compiled class file
 *.class
 
-docker/.env
+.env
+comment-service/target
+local-posting-service/target
+posting-service/target
 # Log file
 *.log
 
@@ -12,6 +15,7 @@ docker/.env
 .mtj.tmp/
 
 # Package Files #
+*.jar.original
 *.jar
 *.war
 *.nar
