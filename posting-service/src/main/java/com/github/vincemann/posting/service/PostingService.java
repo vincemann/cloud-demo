@@ -7,5 +7,7 @@ import com.github.vincemann.springrapid.core.service.CrudService;
 
 public interface PostingService extends CrudService<Posting,Long> {
 
+    public Posting findPostingWithComments(Long postingId);
+
 }
 	
