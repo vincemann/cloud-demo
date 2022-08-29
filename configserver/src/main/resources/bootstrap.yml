@@ -4,19 +4,19 @@ spring:
   profiles:
     active:
     # wenn ich hier git aktiviere, muss auch die uri aktiviert sein
-    - git
-#    - native
+#    - git
+    - native
   cloud:
     config:
       server:
-#        native:
-#          search-locations: classpath:/config
+        native:
+          search-locations: classpath:/config
           # alternative to loading config files from disk
-        git:
-          uri: https://github.com/vincemann/localme-config.git
-#          searchPaths: posting-service, comment-service, local-posting-service
-          username: vincemann
-          password: ${GIT_READ_KEY}
+#        git:
+#          uri: https://github.com/vincemann/localme-config.git
+##          searchPaths: posting-service, comment-service, local-posting-service
+#          username: vincemann
+#          password: ${GIT_READ_KEY}
 
 server:
   port: 8071

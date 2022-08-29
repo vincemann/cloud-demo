@@ -13,6 +13,7 @@ import com.github.vincemann.springrapid.core.slicing.WebController;
 import com.github.vincemann.localposting.model.Posting;
 import com.github.vincemann.localposting.service.PostingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +29,7 @@ public class PostingController extends CrudController<Posting, Long, PostingServ
 		return builder.build();
 	}
 
+	@Qualifier(value = "crudEndpointInfo")
 	@Autowired
 	@Override
 	public void injectEndpointInfo(CrudEndpointInfo endpointInfo) {
