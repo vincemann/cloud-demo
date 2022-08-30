@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashSet;
@@ -28,20 +29,26 @@ public class RESTCommentService implements CommentService {
         this.restTemplate = restTemplate;
     }
 
-    @CircuitBreaker(name = "commentService", fallbackMethod = "buildFallbackCommentSet")
-    @RateLimiter(name = "commentService", fallbackMethod = "buildFallbackCommentSet")
+//    @CircuitBreaker(name = "commentService", fallbackMethod = "buildFallbackCommentSet")
+//    @RateLimiter(name = "commentService", fallbackMethod = "buildFallbackCommentSet")
+//    @Bulkhead(name = "bulkheadCommentService", type= Bulkhead.Type.THREADPOOL, fallbackMethod = "buildFallbackCommentSet")
     @Retry(name = "retryCommentService", fallbackMethod = "buildFallbackCommentSet")
-    @Bulkhead(name = "bulkheadCommentService", type= Bulkhead.Type.THREADPOOL, fallbackMethod = "buildFallbackCommentSet")
     @Override
     public Set<Comment> findCommentsOfPosting(Long postingId) {
-        ResponseEntity<Comment[]> restExchange =
-                restTemplate.exchange(
-                        "http://comment-service/api/core/comment/find-all-of-parent",
-                        HttpMethod.GET,
-                        null, Comment[].class, postingId);
-        @SuppressWarnings("all")
-        Set<Comment> comments = ArrayUtils.arrayToSet(restExchange.getBody());
-        return comments;
+        // org.springframework.web.client.RestClientException
+        try {
+            ResponseEntity<Comment[]> restExchange =
+                    restTemplate.exchange(
+                            "http://comment-service/api/core/comment/find-all-of-parent",
+                            HttpMethod.GET,
+                            null, Comment[].class, postingId);
+            @SuppressWarnings("all")
+            Set<Comment> comments = ArrayUtils.arrayToSet(restExchange.getBody());
+            return comments;
+        }catch (RestClientException e){
+            log.error("Could not read comments in given time, retrying...");
+            throw e;
+        }
     }
 
     @SuppressWarnings("unused")

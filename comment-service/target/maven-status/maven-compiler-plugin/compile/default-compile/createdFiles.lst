@@ -1,6 +1,7 @@
 com/github/vincemann/comment/repo/CommentRepository.class
 com/github/vincemann/comment/controller/CommentController.class
 com/github/vincemann/comment/dto/CommentDto.class
+com/github/vincemann/comment/TimeoutException.class
 com/github/vincemann/comment/service/CommentService.class
 com/github/vincemann/comment/service/jpa/JpaCommentService.class
 com/github/vincemann/comment/CommentServiceApplication.class

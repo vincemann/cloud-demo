@@ -8,6 +8,7 @@ import com.github.vincemann.springrapid.core.controller.CrudController;
 import com.github.vincemann.springrapid.core.controller.dto.mapper.context.CrudDtoMappingContextBuilder;
 import com.github.vincemann.springrapid.core.controller.dto.mapper.context.Direction;
 import com.github.vincemann.springrapid.core.controller.dto.mapper.context.DtoMappingContext;
+import com.github.vincemann.springrapid.core.service.exception.BadEntityException;
 import com.github.vincemann.springrapid.core.slicing.WebController;
 import com.github.vincemann.posting.model.Posting;
 import com.github.vincemann.posting.service.PostingService;
@@ -30,7 +31,7 @@ public class PostingController extends CrudController<Posting, Long, PostingServ
 
 
 	@RequestMapping(value="/api/core/posting/find-with-comments",method = RequestMethod.GET)
-	public ResponseEntity<ReadPostingWithCommentsDto> findPostingWithComments(HttpServletRequest request) throws JsonProcessingException {
+	public ResponseEntity<ReadPostingWithCommentsDto> findPostingWithComments(HttpServletRequest request) throws JsonProcessingException, BadEntityException {
 		Long postingId = Long.valueOf(request.getParameter("posting-id"));
 		Posting postingWithComments = getService().findPostingWithComments(postingId);
 		ReadPostingWithCommentsDto dto = new ReadPostingWithCommentsDto(postingWithComments);
