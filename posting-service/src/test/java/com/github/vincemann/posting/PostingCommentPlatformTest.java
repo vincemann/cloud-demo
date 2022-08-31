@@ -1,22 +1,24 @@
 package com.github.vincemann.posting;
 
-import com.github.vincemann.posting.controller.PostingController;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.github.vincemann.posting.dto.CreatePostingDto;
 import com.github.vincemann.posting.model.Posting;
 import com.github.vincemann.posting.service.CommentService;
-import com.github.vincemann.springrapid.core.controller.json.JsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -24,22 +26,25 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+
+import static com.github.vincemann.springrapid.core.slicing.RapidProfiles.*;
+import static com.github.vincemann.springrapid.coretest.slicing.RapidTestProfiles.*;
 
 @Slf4j
 @Testcontainers
+@ActiveProfiles(value = {SERVICE_TEST,SERVICE,WEB_TEST,WEB,TEST})
 public class PostingCommentPlatformTest {
 
     @Autowired
-    private CommentService commentService;
+    CommentService commentService;
 
-    @Autowired
-    private RestTemplate restTemplate;
+//    @Autowired
+//    PostingController postingController;
 
-    @Autowired
-    PostingController postingController;
-
-    @Autowired
-    JsonMapper jsonMapper;
+//    @Autowired
+//    JsonMapper jsonMapper;
+    ObjectMapper objectMapper;
 
 
     Posting testPosting;
@@ -51,25 +56,27 @@ public class PostingCommentPlatformTest {
     );
 
 
-    private String postingServiceHost;
-    private int postingServicePort;
+    private String host;
+    private int port;
     private boolean init = false;
 
     @BeforeEach
     void setup() {
+//        this.jsonMapper = new RapidJsonMapper();
+        this.objectMapper = new JsonMapper();
         if (!init){
-            composeEnv.withLogConsumer("eurekaserver", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
+//            composeEnv.withLogConsumer("eurekaserver", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
 
             composeEnv.withExposedService("database", 5532);
             composeEnv.withExposedService("configserver", 8071);
 //                    .waitingFor("database",Wait.forListeningPort());
 
-
-
-//        String configServerHost = composeEnv.getServiceHost("posting-service", 8080);
-//        Integer configServerPort = composeEnv.getServicePort("posting-service", 8080);
-//        String healthCheckUrl = configServerHost+":"+configServerPort+"/actuator/health";
-
+//
+//
+////        String configServerHost = composeEnv.getServiceHost("posting-service", 8080);
+////        Integer configServerPort = composeEnv.getServicePort("posting-service", 8080);
+////        String healthCheckUrl = configServerHost+":"+configServerPort+"/actuator/health";
+//
             composeEnv.withExposedService("eurekaserver", 8070);
 //                    .waitingFor("configserver",Wait.forHttp("/actuator/health"));
 //                    .waitingFor("configserver",Wait.forListeningPort());
@@ -80,10 +87,31 @@ public class PostingCommentPlatformTest {
             composeEnv.withExposedService("comment-service", 8080);
 //                    .waitingFor("configserver",Wait.forListeningPort());
 
+            composeEnv.withLogConsumer("database", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
+            composeEnv.waitingFor("database", Wait.forLogMessage(".*database system is ready to accept connections.*", 1));
+
+            composeEnv.withLogConsumer("configserver", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
+            composeEnv.waitingFor("configserver", Wait.forLogMessage(".*Started ConfigurationServerApplication.*", 1));
+
+            composeEnv.withLogConsumer("eurekaserver", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
+            composeEnv.waitingFor("eurekaserver", Wait.forLogMessage(".*Started EurekaServerApplication.*", 1));
+
+            composeEnv.withLogConsumer("posting-service", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
+            composeEnv.waitingFor("posting-service", Wait.forLogMessage(".*Started PostingServiceApplication.*", 1));
+
+            composeEnv.withLogConsumer("comment-service", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
+            composeEnv.waitingFor("comment-service", Wait.forLogMessage(".*Started CommentServiceApplication.*", 1));
+
+
+
             composeEnv.start();
 
-            postingServiceHost = composeEnv.getServiceHost("posting-service", 8080);
-            postingServicePort = composeEnv.getServicePort("posting-service", 8080);
+            host = composeEnv.getServiceHost("posting-service", 8080);
+            port = composeEnv.getServicePort("posting-service", 8080);
+
+
+//            postingServiceHost = "localhost";
+//            postingServicePort = 8080;
             init=true;
         }
 
@@ -108,7 +136,6 @@ public class PostingCommentPlatformTest {
 //        compose = new DockerComposeContainer<>(
 //                new File("src/test/resources/test-compose.yml"));
 //        compose.withExposedService("gateway", 8082);
-//        compose.withLogConsumer("gateway", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
 //        compose.withLogConsumer("calculator", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
 //        compose.withLogConsumer("main", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
 //        compose.waitingFor("gateway", Wait.forLogMessage(".*Started GatewayApplication.*", 1));
@@ -121,23 +148,55 @@ public class PostingCommentPlatformTest {
     @Test
     public void createPosting()
             throws Exception {
+        host = composeEnv.getServiceHost("posting-service",8080);
+        port = composeEnv.getServicePort("posting-service",8080);
+
         String endpoint = "http://"
-                + postingServiceHost + ":"
-                + postingServicePort
-                + postingController.getCreateUrl();
+                + host + ":"
+                + port
+//                + postingController.getCreateUrl();
+                + "/api/core/posting/create";
 
 
         CloseableHttpClient client = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(endpoint);
 
         CreatePostingDto createPostingDto = new CreatePostingDto(testPosting);
-        String json = jsonMapper.writeDto(createPostingDto);
+        String json = objectMapper.writeValueAsString(createPostingDto);
         StringEntity entity = new StringEntity(json);
         httpPost.setEntity(entity);
         httpPost.setHeader("Accept", "application/json");
         httpPost.setHeader("Content-type", "application/json");
 
         CloseableHttpResponse response = client.execute(httpPost);
+        Assertions.assertEquals(response.getStatusLine().getStatusCode(), 200);
+        client.close();
+    }
+
+    @Test
+    public void checkConfigServerHealth()
+            throws Exception {
+        host = composeEnv.getServiceHost("configserver",8071);
+        port = composeEnv.getServicePort("configserver",8071);
+
+        String endpoint = "http://"
+                + host + ":"
+                + port
+//                + postingController.getCreateUrl();
+                + "/actuator/health";
+
+
+        CloseableHttpClient client = HttpClients.createDefault();
+
+//        HttpPost httpPost = new HttpPost(endpoint);
+        HttpGet httpGet = new HttpGet(endpoint);
+        httpGet.setHeader("Accept", "application/json");
+//        httpGet.setHeader("Content-type", "application/json");
+
+
+        CloseableHttpResponse response = client.execute(httpGet);
+        String responseBody = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+        System.err.println(responseBody);
         Assertions.assertEquals(response.getStatusLine().getStatusCode(), 200);
         client.close();
     }

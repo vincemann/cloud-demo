@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -23,12 +24,19 @@ import java.util.Set;
 @Table(name = "posting")
 public class Posting extends AuditingEntity<Long> {
 
+    @Column(name = "commercial_text")
     private String commercialText;
+    @Column(name = "title")
     private String title;
+    @Column(name = "text")
     private String text;
+    @Column(name = "longitude")
     private Long longitude;
+    @Column(name = "latitude")
     private Long latitude;
+    @Column(name = "contactable")
     private Boolean contactable;
+    @Column(name = "picture")
     private byte[] picture;
 
     // get from comment service
@@ -44,7 +52,8 @@ public class Posting extends AuditingEntity<Long> {
         this.latitude = latitude;
         this.contactable = contactable;
         this.picture = picture;
-        this.comments = comments;
+        if (comments != null)
+            this.comments = comments;
     }
 }
 	

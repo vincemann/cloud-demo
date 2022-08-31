@@ -37,12 +37,12 @@ services:
       backend:
         aliases:
           - "configserver"
-#    healthcheck:
-##              test: ["CMD", "curl", "-f", "configserver:8071/actuator/health"]
-#              test: ["CMD-SHELL", "wait-for-it", "configserver:8071"]
-#              interval: 10s
-#              timeout: 5s
-#              retries: 5
+    healthcheck:
+#              test: ["CMD", "curl", "-f", "configserver:8071/actuator/health"]
+              test: ["CMD-SHELL", "wait-for-it", "configserver:8071"]
+              interval: 10s
+              timeout: 5s
+              retries: 5
   eurekaserver:
        image: localme/eurekaserver:0.0.1-SNAPSHOT
        ports:
