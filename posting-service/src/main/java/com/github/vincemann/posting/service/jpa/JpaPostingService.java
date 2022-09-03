@@ -47,7 +47,8 @@ public class JpaPostingService extends JPACrudService<Posting,Long, PostingRepos
     public Posting findPostingWithComments(Long postingId) throws BadEntityException {
         Set<Comment> comments = commentService.findCommentsOfPosting(postingId);
         Posting posting = findById(postingId).get();
-        posting.setComments(comments);
+        System.err.println(comments);
+//        posting.setComments(comments);
         return posting;
     }
 }

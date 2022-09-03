@@ -27,6 +27,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 import static com.github.vincemann.springrapid.core.slicing.RapidProfiles.SERVICE;
 import static com.github.vincemann.springrapid.core.slicing.RapidProfiles.WEB;
@@ -89,19 +90,19 @@ public class PostingCommentPlatformTest {
 //                    .waitingFor("configserver",Wait.forListeningPort());
 
             composeEnv.withLogConsumer("database", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
-            composeEnv.waitingFor("database", Wait.forLogMessage(".*database system is ready to accept connections.*", 1));
+            composeEnv.waitingFor("database", Wait.forLogMessage(".*database system is ready to accept connections.*", 1)/*.withStartupTimeout(Duration.ofSeconds(60))*/);
 
             composeEnv.withLogConsumer("configserver", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
-            composeEnv.waitingFor("configserver", Wait.forLogMessage(".*Started ConfigurationServerApplication.*", 1));
+            composeEnv.waitingFor("configserver", Wait.forLogMessage(".*Started ConfigurationServerApplication.*", 1)/*.withStartupTimeout(Duration.ofSeconds(60))*/);
 
             composeEnv.withLogConsumer("eurekaserver", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
-            composeEnv.waitingFor("eurekaserver", Wait.forLogMessage(".*Started EurekaServerApplication.*", 1));
+            composeEnv.waitingFor("eurekaserver", Wait.forLogMessage(".*Started EurekaServerApplication.*", 1)/*.withStartupTimeout(Duration.ofSeconds(60))*/);
 
             composeEnv.withLogConsumer("posting-service", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
-            composeEnv.waitingFor("posting-service", Wait.forLogMessage(".*Started PostingServiceApplication.*", 1));
+            composeEnv.waitingFor("posting-service", Wait.forLogMessage(".*Started PostingServiceApplication.*", 1)/*.withStartupTimeout(Duration.ofSeconds(60))*/);
 
             composeEnv.withLogConsumer("comment-service", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
-            composeEnv.waitingFor("comment-service", Wait.forLogMessage(".*Started CommentServiceApplication.*", 1));
+            composeEnv.waitingFor("comment-service", Wait.forLogMessage(".*Started CommentServiceApplication.*", 1)/*.withStartupTimeout(Duration.ofSeconds(60))*/);
 
 
 

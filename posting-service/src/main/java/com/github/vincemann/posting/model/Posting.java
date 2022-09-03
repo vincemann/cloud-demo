@@ -40,20 +40,20 @@ public class Posting extends AuditingEntity<Long> {
     private byte[] picture;
 
     // get from comment service
-    @Transient
-    private Set<Comment> comments = new HashSet<>();
+//    @Transient
+//    private Set<Comment> comments = new HashSet<>();
 
     @Builder
-    public Posting(String commercialText, String title, String text, Long longitude, Long latitude, Boolean contactable, byte[] picture, Set<Comment> comments) {
-        this.commercialText = commercialText;
+    public Posting(String commercialText, String title, String text, Long longitude, Long latitude, Boolean contactable, byte[] picture/*, Set<Comment> comments*/) {
+        this.commercialText = commercialText;/*, Set<Comment> comments*/
         this.title = title;
         this.text = text;
         this.longitude = longitude;
         this.latitude = latitude;
         this.contactable = contactable;
         this.picture = picture;
-        if (comments != null)
-            this.comments = comments;
+//        if (comments != null)
+//            this.comments = comments;
     }
 }
 	

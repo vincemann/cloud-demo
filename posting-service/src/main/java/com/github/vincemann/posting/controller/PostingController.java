@@ -36,9 +36,9 @@ public class PostingController extends CrudController<Posting, Long, PostingServ
 		Posting postingWithComments = getService().findPostingWithComments(postingId);
 		ReadPostingWithCommentsDto dto = new ReadPostingWithCommentsDto(postingWithComments);
 		// set comments manually
-		for (Comment comment : postingWithComments.getComments()) {
-			dto.getComments().add(comment);
-		}
+//		for (Comment comment : postingWithComments.getComments()) {
+//			dto.getComments().add(comment);
+//		}
 
 //		getJsonMapper().writeDto(dto);
 		return ResponseEntity.ok(dto);
