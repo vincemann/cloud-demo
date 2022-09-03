@@ -28,7 +28,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 
-import static com.github.vincemann.springrapid.core.slicing.RapidProfiles.*;
+import static com.github.vincemann.springrapid.core.slicing.RapidProfiles.SERVICE;
+import static com.github.vincemann.springrapid.core.slicing.RapidProfiles.WEB;
 import static com.github.vincemann.springrapid.coretest.slicing.RapidTestProfiles.*;
 
 @Slf4j

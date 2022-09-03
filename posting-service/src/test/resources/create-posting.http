@@ -1,0 +1,10 @@
+POST http://localhost:8080/api/core/posting/create
+Content-Type: application/json
+
+{
+  "title": "gil",
+  "text": "gil is a gil",
+  "longitude": 123,
+  "latitude": 242,
+  "contactable": true
+}
