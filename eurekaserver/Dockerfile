@@ -14,8 +14,8 @@ COPY ${JAR_FILE} app.jar
 
 #unpackage jar file
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf /app.jar)
-RUN apt-get update
-RUN apt-get install -y wait-for-it
+RUN #apt-get update && apt-get install -y wait-for-it
+
 #stage 2
 #Same Java runtime
 FROM openjdk:11-slim

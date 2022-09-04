@@ -5,5 +5,7 @@ com/github/vincemann/comment/TimeoutException.class
 com/github/vincemann/comment/service/CommentService.class
 com/github/vincemann/comment/service/jpa/JpaCommentService.class
 com/github/vincemann/comment/CommentServiceApplication.class
+com/github/vincemann/comment/model/MyIdentifiableEntityImpl.class
+com/github/vincemann/comment/model/MyAuditingEntity.class
 com/github/vincemann/comment/dto/CommentDto$CommentDtoBuilder.class
 com/github/vincemann/comment/model/Comment.class

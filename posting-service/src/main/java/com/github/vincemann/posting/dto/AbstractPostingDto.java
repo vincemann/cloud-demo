@@ -15,14 +15,14 @@ public abstract class AbstractPostingDto extends AbstractDto<Long> {
     private Long longitude;
     private Long latitude;
     private Boolean contactable;
-    private byte[] picture;
+//    private byte[] picture;
 
-    public AbstractPostingDto(String title, String text, Long longitude, Long latitude, Boolean contactable, byte[] picture) {
+    public AbstractPostingDto(String title, String text, Long longitude, Long latitude, Boolean contactable/*, byte[] picture*/) {
         this.title = title;
         this.text = text;
         this.longitude = longitude;
         this.latitude = latitude;
         this.contactable = contactable;
-        this.picture = picture;
+//        this.picture = picture;
     }
 }

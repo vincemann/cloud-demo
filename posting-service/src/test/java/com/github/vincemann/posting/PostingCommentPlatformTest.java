@@ -171,7 +171,8 @@ public class PostingCommentPlatformTest {
         httpPost.setHeader("Content-type", "application/json");
 
         CloseableHttpResponse response = client.execute(httpPost);
-        Assertions.assertEquals(response.getStatusLine().getStatusCode(), 200);
+        Assertions.
+                assertEquals(response.getStatusLine().getStatusCode(), 200);
         client.close();
     }
 
