@@ -8,3 +8,7 @@ Content-Type: application/json
   "latitude": 242,
   "contactable": true
 }
+
+#### find all postings with comments
+GET http://localhost:8080/api/core/posting/find-with-comments?posting-id=1
+Accept: application/json

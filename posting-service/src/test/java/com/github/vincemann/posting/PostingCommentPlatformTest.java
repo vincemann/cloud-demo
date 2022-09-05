@@ -158,8 +158,8 @@ public class PostingCommentPlatformTest {
         String endpoint = "http://"
                 + host + ":"
                 + port
-                + postingController.getCreateUrl();
-//                + "/api/core/posting/create";
+//                + postingController.getCreateUrl();
+                + "/api/core/posting/create";
 
 
         CloseableHttpClient client = HttpClients.createDefault();

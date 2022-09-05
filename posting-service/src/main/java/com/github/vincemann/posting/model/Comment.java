@@ -14,8 +14,6 @@ import javax.persistence.*;
 @Table(name = "comment")
 public class Comment extends AuditingEntity<Long> {
 
-
-
     private Long postingId;
     private String text;
 
