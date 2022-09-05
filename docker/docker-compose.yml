@@ -9,6 +9,7 @@ services:
     environment:
       POSTGRES_USERS: "postgres:postgres"
 #      POSTGRES_PASSWORD: "postgres"
+#      POSTGRES_PASSWORD: "postgres"
       POSTGRES_DATABASES: "localme_comment_dev:postgres|localme_posting_dev:postgres|localme_local_posting_dev:postgres"
 #      POSTGRES_HOST: "database"
 #    volumes:

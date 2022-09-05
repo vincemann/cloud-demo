@@ -2,14 +2,15 @@ version: '2.1'
 
 services:
   database:
-    image: postgres:latest
+    image: lmmdock/postgres-multi
     ports:
     # changed port bc votesnack db is already running on that port
       - "5632:5532"
     environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
-      POSTGRES_DB: "localme_dev"
+      POSTGRES_USERS: "postgres:postgres"
+#      POSTGRES_PASSWORD: "postgres"
+#      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DATABASES: "localme_comment_dev:postgres|localme_posting_dev:postgres|localme_local_posting_dev:postgres"
 #      POSTGRES_HOST: "database"
 #    volumes:
 #        - ./init.sql:/docker-entrypoint-initdb.d/1-init.sql

@@ -2,6 +2,7 @@ package com.github.vincemann.posting;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.github.vincemann.posting.controller.PostingController;
 import com.github.vincemann.posting.dto.CreatePostingDto;
 import com.github.vincemann.posting.model.Posting;
 import com.github.vincemann.posting.service.CommentService;
@@ -27,7 +28,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 
 import static com.github.vincemann.springrapid.core.slicing.RapidProfiles.SERVICE;
 import static com.github.vincemann.springrapid.core.slicing.RapidProfiles.WEB;
@@ -36,13 +36,15 @@ import static com.github.vincemann.springrapid.coretest.slicing.RapidTestProfile
 @Slf4j
 @Testcontainers
 @ActiveProfiles(value = {SERVICE_TEST,SERVICE,WEB_TEST,WEB,TEST})
+@EnableProjectComponentScan
+//@SpringBootTest
 public class PostingCommentPlatformTest {
 
     @Autowired
     CommentService commentService;
 
-//    @Autowired
-//    PostingController postingController;
+    @Autowired
+    PostingController postingController;
 
 //    @Autowired
 //    JsonMapper jsonMapper;
@@ -54,7 +56,7 @@ public class PostingCommentPlatformTest {
 
     @Container
     private DockerComposeContainer composeEnv = new DockerComposeContainer(
-            new File("src/test/resources/test-compose.yml")
+            new File("src/test/resources/docker-compose-posting-test.yml")
     );
 
 
@@ -136,7 +138,7 @@ public class PostingCommentPlatformTest {
 //
 //
 //        compose = new DockerComposeContainer<>(
-//                new File("src/test/resources/test-compose.yml"));
+//                new File("src/test/resources/docker-compose-posting-test.yml"));
 //        compose.withExposedService("gateway", 8082);
 //        compose.withLogConsumer("calculator", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
 //        compose.withLogConsumer("main", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
@@ -156,8 +158,8 @@ public class PostingCommentPlatformTest {
         String endpoint = "http://"
                 + host + ":"
                 + port
-//                + postingController.getCreateUrl();
-                + "/api/core/posting/create";
+                + postingController.getCreateUrl();
+//                + "/api/core/posting/create";
 
 
         CloseableHttpClient client = HttpClients.createDefault();
@@ -203,6 +205,8 @@ public class PostingCommentPlatformTest {
         Assertions.assertEquals(response.getStatusLine().getStatusCode(), 200);
         client.close();
     }
+
+
 
 //    @Test
 //    public void createCommentsForPosting() throws Exception {
