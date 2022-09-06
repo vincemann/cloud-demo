@@ -48,7 +48,7 @@ public class JpaPostingService extends JPACrudService<Posting,Long, PostingRepos
         Set<Comment> comments = commentService.findCommentsOfPosting(postingId);
         Posting posting = findById(postingId).get();
         System.err.println(comments);
-//        posting.setComments(comments);
+        posting.setComments(comments);
         return posting;
     }
 }

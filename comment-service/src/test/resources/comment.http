@@ -12,6 +12,6 @@ POST http://localhost:8081/api/core/comment/create
 Content-Type: application/json
 
 {
-"text": "gil gil",
-"postingId": 1
+  "text": "gil gil",
+  "postingId": 1
 }

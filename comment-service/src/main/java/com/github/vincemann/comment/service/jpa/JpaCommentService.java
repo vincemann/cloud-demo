@@ -22,8 +22,9 @@ public class JpaCommentService extends JPACrudService<Comment,Long, CommentRepos
 
     @Override
     public Set<Comment> findAllOfParent(Long parentId) throws BadEntityException {
-        randomlyRunLong();
-        return getRepository().findAllByPostingId(parentId);
+//        randomlyRunLong();
+        Set<Comment> allByPostingId = getRepository().findAllByPostingId(parentId);
+        return allByPostingId;
     }
 
     private void randomlyRunLong() throws TimeoutException {

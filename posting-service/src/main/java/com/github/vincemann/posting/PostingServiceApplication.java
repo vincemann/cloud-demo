@@ -10,7 +10,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 @RefreshScope
 @EnableDiscoveryClient
-@EnableFeignClients
+//@EnableFeignClients
 @EnableEurekaClient
 public class PostingServiceApplication {
 
