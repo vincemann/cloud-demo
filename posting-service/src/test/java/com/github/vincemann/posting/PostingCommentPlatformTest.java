@@ -1,11 +1,13 @@
 package com.github.vincemann.posting;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.github.vincemann.posting.controller.PostingController;
 import com.github.vincemann.posting.dto.CreatePostingDto;
+import com.github.vincemann.posting.model.Comment;
 import com.github.vincemann.posting.model.Posting;
 import com.github.vincemann.posting.service.CommentService;
+import com.github.vincemann.springrapid.core.controller.json.JsonMapper;
+import com.github.vincemann.springrapid.core.controller.json.RapidJsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -27,6 +29,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import static com.github.vincemann.springrapid.core.slicing.RapidProfiles.SERVICE;
@@ -46,13 +49,13 @@ public class PostingCommentPlatformTest {
     @Autowired
     PostingController postingController;
 
-//    @Autowired
-//    JsonMapper jsonMapper;
     ObjectMapper objectMapper;
 
 
     Posting testPosting;
 
+    Comment testComment1;
+    Comment testComment2;
 
     @Container
     private DockerComposeContainer composeEnv = new DockerComposeContainer(
@@ -67,7 +70,7 @@ public class PostingCommentPlatformTest {
     @BeforeEach
     void setup() {
 //        this.jsonMapper = new RapidJsonMapper();
-        this.objectMapper = new JsonMapper();
+        this.objectMapper = new ObjectMapper();
         if (!init){
 //            composeEnv.withLogConsumer("eurekaserver", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
 
@@ -127,6 +130,14 @@ public class PostingCommentPlatformTest {
                 .text("nice beach dude")
                 .title("beach")
                 .build();
+
+        testComment1 = Comment.builder()
+                .text("example comment 1")
+                .build();
+
+        testComment2 = Comment.builder()
+                .text("second example comment")
+                .build();
     }
 
     @AfterEach
@@ -150,8 +161,12 @@ public class PostingCommentPlatformTest {
 //    }
 
     @Test
-    public void createPosting()
+    public void canCreatePosting()
             throws Exception {
+        createPosting();
+    }
+
+    public CreatePostingDto createPosting() throws IOException {
         host = composeEnv.getServiceHost("posting-service",8080);
         port = composeEnv.getServicePort("posting-service",8080);
 
@@ -173,9 +188,55 @@ public class PostingCommentPlatformTest {
         httpPost.setHeader("Content-type", "application/json");
 
         CloseableHttpResponse response = client.execute(httpPost);
-        Assertions.
-                assertEquals(response.getStatusLine().getStatusCode(), 200);
+        String responseBody = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+        CreatePostingDto readPostingDto = objectMapper.readValue(responseBody, CreatePostingDto.class);
+        Assertions.assertEquals(response.getStatusLine().getStatusCode(), 200);
         client.close();
+        return readPostingDto;
+    }
+
+    @Test
+    public void canCreateComment() throws Exception {
+        CreatePostingDto posting = createPosting();
+        createComment(posting.getId(),"example comment");
+    }
+
+    public Comment createComment(Long postingId,String text) throws Exception{
+
+
+        host = composeEnv.getServiceHost("comment-service",8080);
+        port = composeEnv.getServicePort("comment-service",8080);
+
+        String endpoint = "http://"
+                + host + ":"
+                + port
+//                + postingController.getCreateUrl();
+                + "/api/core/comment/create";
+
+
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost(endpoint);
+
+        Comment createCommentDto = new Comment(postingId,text);
+        String json = objectMapper.writeValueAsString(createCommentDto);
+        StringEntity entity = new StringEntity(json);
+        httpPost.setEntity(entity);
+        httpPost.setHeader("Accept", "application/json");
+        httpPost.setHeader("Content-type", "application/json");
+
+        CloseableHttpResponse response = client.execute(httpPost);
+        String responseBody = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+        Comment readCommentDto = objectMapper.readValue(responseBody, Comment.class);
+        Assertions.assertEquals(response.getStatusLine().getStatusCode(), 200);
+        client.close();
+        return readCommentDto;
+    }
+
+    @Test
+    public void findPostingWithComments()
+            throws Exception {
+        CreatePostingDto posting = createPosting();
+
     }
 
     @Test
@@ -187,7 +248,6 @@ public class PostingCommentPlatformTest {
         String endpoint = "http://"
                 + host + ":"
                 + port
-//                + postingController.getCreateUrl();
                 + "/actuator/health";
 
 
