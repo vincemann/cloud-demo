@@ -3,11 +3,10 @@ package com.github.vincemann.posting;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.vincemann.posting.controller.PostingController;
 import com.github.vincemann.posting.dto.CreatePostingDto;
+import com.github.vincemann.posting.dto.ReadPostingWithCommentsDto;
 import com.github.vincemann.posting.model.Comment;
 import com.github.vincemann.posting.model.Posting;
 import com.github.vincemann.posting.service.CommentService;
-import com.github.vincemann.springrapid.core.controller.json.JsonMapper;
-import com.github.vincemann.springrapid.core.controller.json.RapidJsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -31,14 +30,18 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.github.vincemann.ezcompare.Comparator.compare;
 import static com.github.vincemann.springrapid.core.slicing.RapidProfiles.SERVICE;
 import static com.github.vincemann.springrapid.core.slicing.RapidProfiles.WEB;
 import static com.github.vincemann.springrapid.coretest.slicing.RapidTestProfiles.*;
 
 @Slf4j
 @Testcontainers
-@ActiveProfiles(value = {SERVICE_TEST,SERVICE,WEB_TEST,WEB,TEST})
+@ActiveProfiles(value = {SERVICE_TEST, SERVICE, WEB_TEST, WEB, TEST})
 @EnableProjectComponentScan
 //@SpringBootTest
 public class PostingCommentPlatformTest {
@@ -63,15 +66,17 @@ public class PostingCommentPlatformTest {
     );
 
 
-    private String host;
-    private int port;
+    private String postingHost;
+    private int postingPort;
+    private String commentHost;
+    private int commentPort;
     private boolean init = false;
 
     @BeforeEach
     void setup() {
 //        this.jsonMapper = new RapidJsonMapper();
         this.objectMapper = new ObjectMapper();
-        if (!init){
+        if (!init) {
 //            composeEnv.withLogConsumer("eurekaserver", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
 
             composeEnv.withExposedService("database", 5532);
@@ -95,31 +100,36 @@ public class PostingCommentPlatformTest {
 //                    .waitingFor("configserver",Wait.forListeningPort());
 
             composeEnv.withLogConsumer("database", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
-            composeEnv.waitingFor("database", Wait.forLogMessage(".*database system is ready to accept connections.*", 1)/*.withStartupTimeout(Duration.ofSeconds(60))*/);
+            composeEnv.waitingFor("database", Wait.forLogMessage(".*database system is ready to accept connections.*", 1).withStartupTimeout(Duration.ofSeconds(90)));
 
             composeEnv.withLogConsumer("configserver", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
-            composeEnv.waitingFor("configserver", Wait.forLogMessage(".*Started ConfigurationServerApplication.*", 1)/*.withStartupTimeout(Duration.ofSeconds(60))*/);
+            composeEnv.waitingFor("configserver", Wait.forLogMessage(".*Started ConfigurationServerApplication.*", 1).withStartupTimeout(Duration.ofSeconds(90)));
 
             composeEnv.withLogConsumer("eurekaserver", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
-            composeEnv.waitingFor("eurekaserver", Wait.forLogMessage(".*Started EurekaServerApplication.*", 1)/*.withStartupTimeout(Duration.ofSeconds(60))*/);
+            composeEnv.waitingFor("eurekaserver", Wait.forLogMessage(".*Started EurekaServerApplication.*", 1).withStartupTimeout(Duration.ofSeconds(90)));
 
             composeEnv.withLogConsumer("posting-service", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
-            composeEnv.waitingFor("posting-service", Wait.forLogMessage(".*Started PostingServiceApplication.*", 1)/*.withStartupTimeout(Duration.ofSeconds(60))*/);
+            composeEnv.waitingFor("posting-service", Wait.forLogMessage(".*Started PostingServiceApplication.*", 1).withStartupTimeout(Duration.ofSeconds(90)));
+            composeEnv.waitingFor("posting-service", Wait.forLogMessage(".*Registering application POSTING-SERVICE with eureka with status UP.*", 1).withStartupTimeout(Duration.ofSeconds(90)));
+
 
             composeEnv.withLogConsumer("comment-service", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
-            composeEnv.waitingFor("comment-service", Wait.forLogMessage(".*Started CommentServiceApplication.*", 1)/*.withStartupTimeout(Duration.ofSeconds(60))*/);
-
+            composeEnv.waitingFor("comment-service", Wait.forLogMessage(".*Started CommentServiceApplication.*", 1).withStartupTimeout(Duration.ofSeconds(90)));
+            composeEnv.waitingFor("comment-service", Wait.forLogMessage(".*Registering application COMMENT-SERVICE with eureka with status UP.*", 1).withStartupTimeout(Duration.ofSeconds(90)));
 
 
             composeEnv.start();
 
-            host = composeEnv.getServiceHost("posting-service", 8080);
-            port = composeEnv.getServicePort("posting-service", 8080);
+            postingHost = composeEnv.getServiceHost("posting-service", 8080);
+            postingPort = composeEnv.getServicePort("posting-service", 8080);
 
+
+            commentHost = composeEnv.getServiceHost("comment-service", 8080);
+            commentPort = composeEnv.getServicePort("comment-service", 8080);
 
 //            postingServiceHost = "localhost";
 //            postingServicePort = 8080;
-            init=true;
+            init = true;
         }
 
 
@@ -167,12 +177,16 @@ public class PostingCommentPlatformTest {
     }
 
     public CreatePostingDto createPosting() throws IOException {
-        host = composeEnv.getServiceHost("posting-service",8080);
-        port = composeEnv.getServicePort("posting-service",8080);
+//        postingHost = composeEnv.getServiceHost("posting-service", 8080);
+//        postingPort = composeEnv.getServicePort("posting-service", 8080);
+
+        System.err.println("posting:");
+        System.err.println(postingHost +":"+ postingPort);
+
 
         String endpoint = "http://"
-                + host + ":"
-                + port
+                + postingHost + ":"
+                + postingPort
 //                + postingController.getCreateUrl();
                 + "/api/core/posting/create";
 
@@ -198,18 +212,21 @@ public class PostingCommentPlatformTest {
     @Test
     public void canCreateComment() throws Exception {
         CreatePostingDto posting = createPosting();
-        createComment(posting.getId(),"example comment");
+        createComment(posting.getId(), "example comment");
     }
 
-    public Comment createComment(Long postingId,String text) throws Exception{
+    public Comment createComment(Long postingId, String text) throws Exception {
 
 
-        host = composeEnv.getServiceHost("comment-service",8080);
-        port = composeEnv.getServicePort("comment-service",8080);
+//        postingHost = composeEnv.getServiceHost("comment-service", 8080);
+//        postingPort = composeEnv.getServicePort("comment-service", 8080);
+
+        System.err.println("comment:");
+        System.err.println(commentHost +":"+ commentPort);
 
         String endpoint = "http://"
-                + host + ":"
-                + port
+                + commentHost + ":"
+                + commentPort
 //                + postingController.getCreateUrl();
                 + "/api/core/comment/create";
 
@@ -217,7 +234,7 @@ public class PostingCommentPlatformTest {
         CloseableHttpClient client = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(endpoint);
 
-        Comment createCommentDto = new Comment(postingId,text);
+        Comment createCommentDto = new Comment(postingId, text);
         String json = objectMapper.writeValueAsString(createCommentDto);
         StringEntity entity = new StringEntity(json);
         httpPost.setEntity(entity);
@@ -236,27 +253,26 @@ public class PostingCommentPlatformTest {
     public void findPostingWithComments()
             throws Exception {
         CreatePostingDto posting = createPosting();
+        Comment firstComment = createComment(posting.getId(), testComment1.getText());
+        Comment secondComment = createComment(posting.getId(), testComment2.getText());
 
-    }
 
-    @Test
-    public void checkConfigServerHealth()
-            throws Exception {
-        host = composeEnv.getServiceHost("configserver",8071);
-        port = composeEnv.getServicePort("configserver",8071);
+//        postingHost = composeEnv.getServiceHost("posting-service", 8080);
+//        postingPort = composeEnv.getServicePort("posting-service", 8080);
+
+        Thread.sleep(5000);
+        System.err.println("posting with comments:");
+        System.err.println(postingHost +":"+ postingPort);
 
         String endpoint = "http://"
-                + host + ":"
-                + port
-                + "/actuator/health";
-
+                + postingHost + ":"
+                + postingPort
+                + "/api/core/posting/find-with-comments?posting-id=" + posting.getId().toString();
 
         CloseableHttpClient client = HttpClients.createDefault();
 
-//        HttpPost httpPost = new HttpPost(endpoint);
         HttpGet httpGet = new HttpGet(endpoint);
         httpGet.setHeader("Accept", "application/json");
-//        httpGet.setHeader("Content-type", "application/json");
 
 
         CloseableHttpResponse response = client.execute(httpGet);
@@ -264,8 +280,57 @@ public class PostingCommentPlatformTest {
         System.err.println(responseBody);
         Assertions.assertEquals(response.getStatusLine().getStatusCode(), 200);
         client.close();
+
+        ReadPostingWithCommentsDto responseDto = objectMapper.readValue(responseBody, ReadPostingWithCommentsDto.class);
+
+        compare(responseDto)
+                .with(posting)
+                .properties()
+                .all()
+                .ignore(responseDto::getComments)
+                .assertEqual();
+
+        List<Comment> comments = responseDto.getComments().stream().collect(Collectors.toList());
+        Assertions.assertEquals(2,comments.size());
+
+        Comment firstCommentDto = responseDto.getComments().stream().filter(c -> c.getText().equals(firstComment.getText())).findFirst().get();
+        Comment secondCommentDto = responseDto.getComments().stream().filter(c -> c.getText().equals(secondComment.getText())).findFirst().get();
+        compare(firstCommentDto)
+                .with(firstComment)
+                .properties().all().assertEqual();
+
+        compare(secondCommentDto)
+                .with(secondComment)
+                .properties().all().assertEqual();
+
     }
 
+//    @Test
+//    public void checkConfigServerHealth()
+//            throws Exception {
+//        postingHost = composeEnv.getServiceHost("configserver", 8071);
+//        postingPort = composeEnv.getServicePort("configserver", 8071);
+//
+//        String endpoint = "http://"
+//                + postingHost + ":"
+//                + postingPort
+//                + "/actuator/health";
+//
+//
+//        CloseableHttpClient client = HttpClients.createDefault();
+//
+////        HttpPost httpPost = new HttpPost(endpoint);
+//        HttpGet httpGet = new HttpGet(endpoint);
+//        httpGet.setHeader("Accept", "application/json");
+////        httpGet.setHeader("Content-type", "application/json");
+//
+//
+//        CloseableHttpResponse response = client.execute(httpGet);
+//        String responseBody = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+//        System.err.println(responseBody);
+//        Assertions.assertEquals(response.getStatusLine().getStatusCode(), 200);
+//        client.close();
+//    }
 
 
 //    @Test

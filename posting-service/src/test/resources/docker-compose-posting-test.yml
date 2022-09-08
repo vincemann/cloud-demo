@@ -45,18 +45,18 @@ services:
               timeout: 5s
               retries: 5
   eurekaserver:
-       image: localme/eurekaserver:0.0.1-SNAPSHOT
-       ports:
-         - "8070:8070"
-       depends_on:
-         database:
-           condition: service_healthy
-         configserver:
-           condition: service_started
-       networks:
-         backend:
-           aliases:
-             - "eurekaserver"
+     image: localme/eurekaserver:0.0.1-SNAPSHOT
+     ports:
+       - "8070:8070"
+     depends_on:
+       database:
+         condition: service_healthy
+       configserver:
+         condition: service_started
+     networks:
+       backend:
+         aliases:
+           - "eurekaserver"
 
   posting-service:
     image: localme/posting-service:0.0.2-SNAPSHOT
@@ -74,18 +74,18 @@ services:
       - backend
 
   comment-service:
-      image: localme/comment-service:0.0.1-SNAPSHOT
-      depends_on:
-          database:
-            condition: service_healthy
-          configserver:
-  #          condition: service_healthy
-            condition: service_started
+    image: localme/comment-service:0.0.1-SNAPSHOT
+    depends_on:
+        database:
+          condition: service_healthy
+        configserver:
+#          condition: service_healthy
+          condition: service_started
 #      restart: on-failure
-      ports:
-          - "8081:8080"
-      networks:
-          - backend
+    ports:
+        - "8081:8080"
+    networks:
+        - backend
 
 
 networks:
