@@ -2,9 +2,9 @@
 *.class
 
 .env
-comment-service/target
-local-posting-service/target
-posting-service/target
+comment-service/target/**
+local-posting-service/target/**
+posting-service/target/**
 # Log file
 *.log
 
