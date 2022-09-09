@@ -260,7 +260,6 @@ public class PostingCommentPlatformTest {
 //        postingHost = composeEnv.getServiceHost("posting-service", 8080);
 //        postingPort = composeEnv.getServicePort("posting-service", 8080);
 
-        Thread.sleep(5000);
         System.err.println("posting with comments:");
         System.err.println(postingHost +":"+ postingPort);
 
@@ -288,6 +287,7 @@ public class PostingCommentPlatformTest {
                 .properties()
                 .all()
                 .ignore(responseDto::getComments)
+                .ignore(testPosting::getCommercialText)
                 .assertEqual();
 
         List<Comment> comments = responseDto.getComments().stream().collect(Collectors.toList());

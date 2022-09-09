@@ -42,6 +42,7 @@ public class RESTCommentService implements CommentService {
 //        Map<String, String> params = new HashMap<>();
 //        params.put("id", postingId.toString());
         try {
+            Thread.sleep(5000);
             ResponseEntity<Comment[]> restExchange =
                     restTemplate.exchange(
                             "http://comment-service/api/core/comment/find-all-of-parent?id={id}",
@@ -53,6 +54,8 @@ public class RESTCommentService implements CommentService {
         }catch (RestClientException e){
             log.error("Could not read comments in given time, retrying...");
             throw e;
+        } catch (InterruptedException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 
