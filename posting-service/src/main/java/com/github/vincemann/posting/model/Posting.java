@@ -56,5 +56,6 @@ public class Posting extends AuditingEntity<Long> {
         if (comments != null)
             this.comments = comments;
     }
+
 }
 	

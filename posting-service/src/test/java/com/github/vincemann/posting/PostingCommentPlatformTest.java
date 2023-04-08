@@ -1,6 +1,7 @@
 package com.github.vincemann.posting;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.vincemann.posting.controller.PostingController;
 import com.github.vincemann.posting.dto.CreatePostingDto;
 import com.github.vincemann.posting.dto.ReadPostingWithCommentsDto;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
+import org.testcontainers.containers.ContainerState;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -100,6 +102,7 @@ public class PostingCommentPlatformTest {
 //                    .waitingFor("configserver",Wait.forListeningPort());
 
             composeEnv.withLogConsumer("database", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
+
             composeEnv.waitingFor("database", Wait.forLogMessage(".*database system is ready to accept connections.*", 1).withStartupTimeout(Duration.ofSeconds(90)));
 
             composeEnv.withLogConsumer("configserver", new Slf4jLogConsumer(PostingCommentPlatformTest.log));
@@ -124,6 +127,7 @@ public class PostingCommentPlatformTest {
             postingPort = composeEnv.getServicePort("posting-service", 8080);
 
 
+
             commentHost = composeEnv.getServiceHost("comment-service", 8080);
             commentPort = composeEnv.getServicePort("comment-service", 8080);
 
@@ -131,6 +135,7 @@ public class PostingCommentPlatformTest {
 //            postingServicePort = 8080;
             init = true;
         }
+
 
 
         testPosting = Posting.builder()
@@ -208,6 +213,8 @@ public class PostingCommentPlatformTest {
         client.close();
         return readPostingDto;
     }
+
+
 
     @Test
     public void canCreateComment() throws Exception {
@@ -301,7 +308,9 @@ public class PostingCommentPlatformTest {
 
         compare(secondCommentDto)
                 .with(secondComment)
-                .properties().all().assertEqual();
+                .properties()
+                .all()
+                .assertEqual();
 
     }
 

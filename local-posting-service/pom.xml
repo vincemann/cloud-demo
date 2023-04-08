@@ -2,10 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<!--    <parent>-->
+<!--        <groupId>org.springframework.boot</groupId>-->
+<!--        <artifactId>spring-boot-starter-parent</artifactId>-->
+<!--        <version>2.2.5.RELEASE</version>-->
+<!--        <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
+<!--    </parent>-->
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.5.RELEASE</version>
+        <version>2.2.3.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -13,7 +20,7 @@
     <modelVersion>4.0.0</modelVersion>
 
 
-    <groupId>com.github.vincemann</groupId>
+    <groupId>com.github.vincemann.localme</groupId>
     <artifactId>local-posting-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>local postings ms</name>
@@ -24,7 +31,7 @@
         <docker.image.prefix>localme</docker.image.prefix>
         <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
         <resilience4j.version>1.5.0</resilience4j.version>
-        <spring.rapid.version>1.0.0-SNAPSHOT.13</spring.rapid.version>
+        <spring.rapid.version>1.0.0-SNAPSHOT.15</spring.rapid.version>
     </properties>
 
     <dependencies>

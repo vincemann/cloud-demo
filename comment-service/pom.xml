@@ -6,9 +6,11 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.2.3.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
-    <groupId>com.github.vincemann</groupId>
+
+
+    <groupId>com.github.vincemann.localme</groupId>
     <artifactId>comment-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>comment ms</name>
@@ -18,7 +20,7 @@
         <java.version>11</java.version>
         <docker.image.prefix>localme</docker.image.prefix>
         <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
-        <spring.rapid.version>1.0.0-SNAPSHOT.13</spring.rapid.version>
+        <spring.rapid.version>1.0.0-SNAPSHOT.15</spring.rapid.version>
         <resilience4j.version>1.5.0</resilience4j.version>
     </properties>
 

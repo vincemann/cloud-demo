@@ -1,7 +1,6 @@
 package com.github.vincemann.posting.dto;
 
-import com.github.vincemann.springrapid.core.model.AbstractDto;
-import lombok.Builder;
+import com.github.vincemann.springrapid.core.dto.IdAwareDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public abstract class AbstractPostingDto extends AbstractDto<Long> {
+public abstract class AbstractPostingDto extends IdAwareDto<Long> {
     private String title;
     private String text;
     private Long longitude;

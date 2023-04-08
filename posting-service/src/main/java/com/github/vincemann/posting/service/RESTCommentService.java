@@ -32,17 +32,15 @@ public class RESTCommentService implements CommentService {
         this.restTemplate = restTemplate;
     }
 
-//    @CircuitBreaker(name = "commentService", fallbackMethod = "buildFallbackCommentSet")
+    //    @CircuitBreaker(name = "commentService", fallbackMethod = "buildFallbackCommentSet")
 //    @RateLimiter(name = "commentService", fallbackMethod = "buildFallbackCommentSet")
 //    @Bulkhead(name = "bulkheadCommentService", type= Bulkhead.Type.THREADPOOL, fallbackMethod = "buildFallbackCommentSet")
-//    @Retry(name = "retryCommentService", fallbackMethod = "buildFallbackCommentSet")
+    @Retry(name = "retryCommentService", fallbackMethod = "buildFallbackCommentSet")
     @Override
     public Set<Comment> findCommentsOfPosting(Long postingId) {
         // org.springframework.web.client.RestClientException
-//        Map<String, String> params = new HashMap<>();
-//        params.put("id", postingId.toString());
         try {
-            Thread.sleep(5000);
+            Thread.sleep(1500);
             ResponseEntity<Comment[]> restExchange =
                     restTemplate.exchange(
                             "http://comment-service/api/core/comment/find-all-of-parent?id={id}",
@@ -51,21 +49,22 @@ public class RESTCommentService implements CommentService {
             @SuppressWarnings("all")
             Set<Comment> comments = ArrayUtils.arrayToSet(restExchange.getBody());
             return comments;
-        }catch (RestClientException e){
-            log.error("Could not read comments in given time, retrying...");
-            throw e;
+//            System.out.println("COMMENT SERVICE LOOKUP FAILED");
+//            log.error("Could not read comments in given time, retrying...", e);
+//            throw new RuntimeException("GILGIGLILIGLGILG");
+//        }
         } catch (InterruptedException e) {
             throw new IllegalArgumentException(e);
         }
     }
 
     @SuppressWarnings("unused")
-    public Set<Comment> buildFallbackCommentSet(Long postingId,Throwable t){
-        log.error("error while locating comments:",t);
+    public Set<Comment> buildFallbackCommentSet(Long postingId, Throwable t) {
+        log.error("error while locating comments:", t);
         Set<Comment> defaultComments = new HashSet<>();
         defaultComments.add(Comment.builder()
-                        .postingId(postingId)
-                        .text("Could not locate comments")
+                .postingId(postingId)
+                .text("Could not locate comments")
                 .build());
         return defaultComments;
     }
